@@ -1,0 +1,355 @@
+table fraudTrain
+	lineageTag: a285ed3a-82ae-4c9b-b2d8-ed83140b8435
+
+	measure maxamt = MAX('fraudTrain'[amt])
+		lineageTag: c05b7c8b-0fab-4fb8-9013-1fc4c3f7e588
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CntCat = COUNT(fraudTrain[category])
+		formatString: 0
+		lineageTag: c8fcedfd-79d4-41e2-a822-9766c7aa91e2
+
+	measure 'Current Age' =
+			
+			VAR BD= SELECTEDVALUE(fraudTrain[dob])
+			RETURN
+			IF(
+			    NOT(ISBLANK(BD)),
+			    DATEDIFF(BD,TODAY(),YEAR)
+			)
+		formatString: 0
+		lineageTag: 85c2e4e5-67ca-4d20-b965-35b20ca46d49
+
+	measure 'Fraud Case Count' = ```
+			
+			CALCULATE(
+			    COUNTROWS(fraudTrain), 
+			    fraudTrain[is_fraud] = 1
+			)
+			```
+		formatString: 0
+		lineageTag: 5a8791bf-8f80-42fb-a608-90ffca36460e
+
+	measure 'Risk Count' =
+			
+			CALCULATE(COUNTROWS(fraudTrain),
+			    fraudTrain[is_fraud]=1,
+			    FILTER(
+			    KEEPFILTERS(Values(fraudTrain[amt])),
+			        fraudTrain[amt] >= [Threshold Amount]
+			    )
+			)
+		formatString: 0
+		lineageTag: bc2dafdf-4a09-4949-981a-2d25ade435d8
+
+	measure 'Amount lost to frauds' =
+			
+			CALCULATE(SUM(fraudTrain[amt]),fraudTrain[is_fraud]=1)
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 2d39d85c-3864-43bb-aaf3-e26101f8a229
+
+	measure FraudCount =
+			
+			CALCULATE(COUNTROWS(fraudTrain),fraudTrain[is_fraud]=1)
+		formatString: 0
+		lineageTag: e615eed4-eab9-4b7d-bcf9-696602942df0
+
+	measure 'Merchants Involved' =
+			
+			CALCULATE(COUNT(fraudTrain[merchant]),fraudTrain[is_fraud]=1)
+		formatString: 0
+		lineageTag: 5f0fe603-d6b7-4e84-9b7e-afb610244ece
+
+	measure 'Total transactions' =
+			
+			CALCULATE(COUNT(fraudTrain[trans_num]))
+		formatString: 0
+		lineageTag: 843ed120-b6c2-4337-a67d-e1aca78a83e6
+
+	measure 'Population Involved' =
+			
+			SUMX(
+			    SUMMARIZE(
+			        'fraudTrain',
+			        'fraudTrain'[state]
+			    ),
+			    CALCULATE(MAX('fraudTrain'[city_pop]))
+			)
+		formatString: 0
+		lineageTag: e564707a-afe6-44c7-a019-775c4627f8fc
+
+	column SN
+		dataType: string
+		lineageTag: caa8359c-7a51-411f-ba0e-4d5f787d404d
+		summarizeBy: none
+		sourceColumn: SN
+
+		annotation SummarizationSetBy = Automatic
+
+	column trans_date_trans_time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 912b7214-603b-4463-b04f-dfe0dc29bfae
+		summarizeBy: none
+		sourceColumn: trans_date_trans_time
+
+		variation Variation
+			isDefault
+			relationship: e3c3846d-623f-449e-975e-b8b9db1eb9fe
+			defaultHierarchy: LocalDateTable_3774c992-ad6e-4368-8afa-e45be0dd8e57.'Date Hierarchy'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column cc_num
+		dataType: string
+		lineageTag: d32879ce-0736-45b8-a637-93bb038ba929
+		summarizeBy: none
+		sourceColumn: cc_num
+
+		annotation SummarizationSetBy = Automatic
+
+	column merchant
+		dataType: string
+		lineageTag: 3cd00602-c551-42eb-8bfb-41e0a9fae5a1
+		summarizeBy: none
+		sourceColumn: merchant
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: 97bc879a-0113-4ece-b7ea-2db148492299
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column amt
+		dataType: double
+		lineageTag: 9394a541-52de-41e6-ae42-29834a13f78a
+		summarizeBy: sum
+		sourceColumn: amt
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column first
+		dataType: string
+		lineageTag: a0c01a5e-8d0d-4c90-8ccc-0f1c60ece073
+		summarizeBy: none
+		sourceColumn: first
+
+		annotation SummarizationSetBy = Automatic
+
+	column last
+		dataType: string
+		lineageTag: d3375c90-5bc7-4b43-860d-d03e138cf96d
+		summarizeBy: none
+		sourceColumn: last
+
+		annotation SummarizationSetBy = Automatic
+
+	column gender
+		dataType: string
+		lineageTag: 66900321-ac37-4b19-93b4-75a9023d0b00
+		summarizeBy: none
+		sourceColumn: gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column street
+		dataType: string
+		lineageTag: aaac3554-c108-404a-b4df-7b784de4c5f6
+		summarizeBy: none
+		sourceColumn: street
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: fd772644-1784-4836-bb5d-78b37efbb632
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		lineageTag: 50f7e932-a651-473c-b271-645102e5d5c4
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	column zip
+		dataType: string
+		lineageTag: 7791f7b2-524a-4058-8cef-6a7957afc527
+		summarizeBy: none
+		sourceColumn: zip
+
+		annotation SummarizationSetBy = Automatic
+
+	column lat
+		dataType: string
+		lineageTag: a2b63989-739e-4202-9ae6-19593b2b7605
+		summarizeBy: none
+		sourceColumn: lat
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column long
+		dataType: string
+		lineageTag: 31cc506b-0d74-4cea-8520-42f815e85337
+		summarizeBy: none
+		sourceColumn: long
+
+		annotation SummarizationSetBy = Automatic
+
+	column city_pop
+		dataType: int64
+		formatString: 0
+		lineageTag: ebcc85fb-f2fd-4bd4-85c6-5316a30b9e15
+		summarizeBy: sum
+		sourceColumn: city_pop
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column job
+		dataType: string
+		lineageTag: 29ef2a84-3ddb-48d9-aac1-e9ae7287c59b
+		summarizeBy: none
+		sourceColumn: job
+
+		annotation SummarizationSetBy = Automatic
+
+	column dob
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 6c7bc44d-8ece-43c8-81ba-a888dfb3a4ac
+		summarizeBy: none
+		sourceColumn: dob
+
+		variation Variation
+			isDefault
+			relationship: 08717060-3191-47c2-b69d-1ecbccc2b942
+			defaultHierarchy: LocalDateTable_81ac84a0-8a2c-4444-ac07-c2eab3efca69.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column trans_num
+		dataType: string
+		lineageTag: 4a7eed1b-1e18-4aec-a277-d4ef0acb8c47
+		summarizeBy: none
+		sourceColumn: trans_num
+
+		annotation SummarizationSetBy = Automatic
+
+	column unix_time
+		dataType: string
+		lineageTag: c57b9198-96af-43dc-bf25-bcf16505d6b7
+		summarizeBy: none
+		sourceColumn: unix_time
+
+		annotation SummarizationSetBy = Automatic
+
+	column merch_lat
+		dataType: string
+		lineageTag: 79d31ddd-7c54-4a4a-8f67-b22971a389d9
+		summarizeBy: none
+		sourceColumn: merch_lat
+
+		annotation SummarizationSetBy = Automatic
+
+	column merch_long
+		dataType: string
+		lineageTag: bb956c77-84a3-415e-9e4d-d84e4feca301
+		summarizeBy: none
+		sourceColumn: merch_long
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_fraud
+		dataType: int64
+		formatString: 0
+		lineageTag: a98b01cc-50a8-41a9-8fba-df1e119b1ba5
+		summarizeBy: sum
+		sourceColumn: is_fraud
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hour = ```
+			
+			    HOUR('fraudTrain'[trans_date_trans_time])
+			
+			
+			
+			
+			
+			```
+		formatString: 0
+		lineageTag: 311d082d-a0be-4b56-bb63-f4aed8744202
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Age
+		dataType: double
+		lineageTag: 78cf263f-cd87-4d74-bd1e-9315850e2a6f
+		summarizeBy: sum
+		sourceColumn: Age
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Age Group' =
+			
+			SWITCH(
+			    TRUE(),
+			    [Age] < 25, "Under 25",
+			    [Age] <= 35, "25-35",
+			    [Age] <= 50, "36-50",
+			    [Age] <= 65, "51-65",
+			    "Over 65"
+			)
+		lineageTag: 5b78350d-2e46-4a35-ba06-19557e13523d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fraudTrain = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Ashit\Downloads\fraudTrain.csv\fraudTrain.csv"),[Delimiter=",", Columns=23, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column2", type text}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"Column2", "trans_date_trans_time"}, {"Column3", "cc_num"}, {"Column4", "merchant"}, {"Column5", "category"}, {"Column6", "amt"}, {"Column7", "first"}, {"Column8", "last"}, {"Column9", "gender"}, {"Column10", "street"}, {"Column11", "city"}, {"Column12", "state"}, {"Column13", "zip"}, {"Column14", "lat"}, {"Column15", "long"}, {"Column16", "city_pop"}, {"Column17", "job"}, {"Column18", "dob"}, {"Column19", "trans_num"}, {"Column20", "unix_time"}, {"Column21", "merch_lat"}, {"Column22", "merch_long"}, {"Column23", "is_fraud"}}),
+				    #"Removed Top Rows" = Table.Skip(#"Renamed Columns",1),
+				    #"Renamed Columns1" = Table.RenameColumns(#"Removed Top Rows",{{"Column1", "SN"}}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Renamed Columns1",{{"dob", type date}}),
+				    #"Inserted Age" = Table.AddColumn(#"Changed Type1", "Age", each Date.From(DateTime.LocalNow()) - [dob], type duration),
+				    #"Calculated Total Years" = Table.TransformColumns(#"Inserted Age",{{"Age", each Duration.TotalDays(_) / 365, type number}}),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Calculated Total Years",{{"Age", type number}})
+				in
+				    #"Changed Type2"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

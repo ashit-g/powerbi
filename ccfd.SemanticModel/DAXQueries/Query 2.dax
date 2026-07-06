@@ -1,0 +1,16 @@
+Risk Score=
+VAR AmountScore=
+    SWITCH(
+        TRUE(),
+        'fraudTrain'[amt]>=1000,3,
+        'fraudTrain'[amt]>=500,2,
+        1
+    )
+VAR FraudScore=
+    IF('fraudTrain'[is_fraud]=1,3,0)
+VAR NightScore=
+    IF(
+        'fraudTrain'[Hour]>=22 || 'fraudTrain'[Hour]<=5,1,0
+    )
+RETURN
+AmountScore+FraudScore+NightScore

@@ -1,0 +1,49 @@
+table Option
+	lineageTag: 1b5b5f1e-fea4-45c5-8dae-20ebb6d70ea3
+
+	column Option
+		lineageTag: 023d2161-83bc-42e0-a66d-228f94cdcc9f
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Option Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Option Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Option Fields'
+		isHidden
+		lineageTag: 72784fbc-caf2-405f-b62a-963e0005d3d6
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Option Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Option Order'
+		isHidden
+		formatString: 0
+		lineageTag: 674e1fc8-850b-42ff-b317-d5ccdddc4fda
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Option = calculated
+		mode: import
+		source =
+				{
+				    ("Age Group", NAMEOF('fraudTrain'[Age Group]), 0),
+				    ("merchant", NAMEOF('fraudTrain'[merchant]), 1),
+				    ("category", NAMEOF('fraudTrain'[category]), 2)
+				}
+
+	annotation PBI_Id = 3db94d79b89342719e8df503204b21b7
+

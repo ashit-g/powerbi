@@ -1,0 +1,10 @@
+relationship e3c3846d-623f-449e-975e-b8b9db1eb9fe
+	joinOnDateBehavior: datePartOnly
+	fromColumn: fraudTrain.trans_date_trans_time
+	toColumn: LocalDateTable_3774c992-ad6e-4368-8afa-e45be0dd8e57.Date
+
+relationship 08717060-3191-47c2-b69d-1ecbccc2b942
+	joinOnDateBehavior: datePartOnly
+	fromColumn: fraudTrain.dob
+	toColumn: LocalDateTable_81ac84a0-8a2c-4444-ac07-c2eab3efca69.Date
+

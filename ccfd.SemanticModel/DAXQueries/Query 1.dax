@@ -1,0 +1,6 @@
+Hour=
+    HOUR('fraudTrain'[trans_date_trans_time])
+
+
+
+

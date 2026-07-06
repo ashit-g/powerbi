@@ -1,0 +1,23 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-IN
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["fraudTrain"]
+
+annotation PBI_ProTooling = ["DaxQueryView_Desktop","DevMode"]
+
+ref table fraudTrain
+ref table DateTableTemplate_3f8a26dd-d68f-461c-9f0c-d909faefc74f
+ref table LocalDateTable_3774c992-ad6e-4368-8afa-e45be0dd8e57
+ref table LocalDateTable_81ac84a0-8a2c-4444-ac07-c2eab3efca69
+ref table Amount
+ref table Option
+
+ref cultureInfo en-US
+

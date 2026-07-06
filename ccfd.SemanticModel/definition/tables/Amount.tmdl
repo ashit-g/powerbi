@@ -1,0 +1,30 @@
+table Amount
+	lineageTag: 02f4d556-2170-41f9-aac7-aabb74bffda9
+
+	measure 'Threshold Amount' = SELECTEDVALUE('Amount'[Amount])
+		lineageTag: 7ec99b04-8550-4206-b25a-e53a726f9b9b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Amount
+		dataType: double
+		formatString: 0
+		lineageTag: 69795ece-bbf3-4ce0-bf58-50a8ef01f929
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	partition Amount = calculated
+		mode: import
+		source = GENERATESERIES(0, 29000, 1000)
+
+	annotation PBI_Id = dc78d3b95ae04ce784a1accd6c1f2b52
+
